@@ -7,5 +7,6 @@ tomcat_additional_packages:
   - tomcat8-examples
 tomcat_username: admin
 tomcat_password: password
-war_location: https://qt-s3-new-testing.s3-us-west-2.amazonaws.com/gameoflife.war
-war_file_name: gameoflife.war
+port: 6060
+war_location: https://satish-s3-from-console.s3.ap-south-1.amazonaws.com/webapp.war
+war_file_name: ride.war

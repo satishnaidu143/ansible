@@ -1,17 +1,6 @@
 ---
 - hosts: all
   become: yes
-  vars:
-    xmx_size: 512m
-    max_perm_size: 256m
-    tomcat_additional_packages:
-      - tomcat8-docs 
-      - tomcat8-admin 
-      - tomcat8-examples
-    tomcat_username: admin
-    tomcat_password: password
-    war_location: https://satish-s3-from-console.s3.ap-south-1.amazonaws.com/webapp.war
-    war_file_name: easyride.war
   tasks:
     - name: update ubuntu packages & install tomcat8
       apt:
@@ -35,6 +24,12 @@
         dest: /etc/tomcat8/tomcat-users.xml
       notify:
         - restart tomcat8
+    - name: modifing tomcat port 
+      template:
+        src: templates/server.xml.j2
+        dest: /etc/tomcat8/server.xml
+      notify:
+        - restart tomcat8    
     - name: copy game of life war into tomcat
       get_url:
         url: "{{ war_location }}"
