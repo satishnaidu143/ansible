@@ -1,0 +1,38 @@
+---
+-  hosts: all
+   become:  yes
+   tasks:
+   - name: fail for unsupported flatforms
+     fail:
+       msg: this playbook is only for "Debian"
+     when: ansible_os_family != "Debian"  
+   - name: update ubuntu packages
+     package:
+       update_cache: yes
+     when: ansible_os_family == "Debian"
+   - name: install apache2
+     package:
+       name: "{{ package_name }}"
+       state: present
+     notify:
+     - restart apache2 
+   - debug:
+       msg: installing apche server using package {{ package_name }} 
+   - name: install php modules
+     package:
+       name: "{{ item }}"
+       state: present
+     loop:
+       - php
+       - php-mysql
+     notify:
+     - restart apache2
+   - debug: 
+       msg: installing php modules
+   handlers:
+   - name: restart apache2
+     service:
+       name: "{{ package_name }}"
+       state: restarted
+   - debug:
+       msg: restarting {{ package_name }}  
