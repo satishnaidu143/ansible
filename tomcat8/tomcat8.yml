@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - name: update ubuntu packages & install tomcat8
-      apt:
+      package:
         name: tomcat8
         update_cache: yes
         state: present
@@ -18,6 +18,8 @@
         name: "{{ item }}"
         state: present
       loop: "{{ tomcat_additional_packages }}"
+    - debug:
+        msg: installing "{{ tomcat_additional_packages }}"
     - name: copy tomcat users 
       template:
         src: templates/tomcat-users.xml.j2
@@ -29,13 +31,17 @@
         src: templates/server.xml.j2
         dest: /etc/tomcat8/server.xml
       notify:
-        - restart tomcat8    
+        - restart tomcat8
+    - debug:
+        msg: port updated to "{{ port }}"    
     - name: copy game of life war into tomcat
       get_url:
         url: "{{ war_location }}"
         dest: "/var/lib/tomcat8/webapps/{{ war_file_name }}"
       notify:
         - restart tomcat8
+    - debug:
+        msg: war file name "{{ war_file_name }}"    
 
   handlers:
     - name: restart tomcat8
